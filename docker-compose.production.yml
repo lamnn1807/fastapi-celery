@@ -11,15 +11,6 @@ services:
     volumes:
       - "rabbitmq_data:/bitnami"
 
-  redis:
-    image: "bitnami/redis:5.0.4"
-    environment:
-      - REDIS_PASSWORD=password123
-    ports:
-      - "6379:6379"
-    volumes:
-      - "redis_data:/bitnami/redis/data"
-
   celery-flower:
     image: gregsi/latest-celery-flower-docker:latest
     environment:
@@ -36,7 +27,20 @@ services:
       - "5555:5555"
     depends_on:
       - rabbitmq
-      - redis
+
+  fastapi:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - rabbitmq
+    command: "uvicorn main:app --reload --host 0.0.0.0 --port 8000"
+
+  worker:
+    build: .
+    depends_on:
+      - rabbitmq
+    command: "celery worker -A worker.celery_worker -l info -Q test-queue -c 1"
 
 volumes:
   rabbitmq_data:
