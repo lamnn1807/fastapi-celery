@@ -2,7 +2,10 @@ version: "3.7"
 
 services:
   rabbitmq:
-    image: "bitnami/rabbitmq:3.7"
+    image: "rabbitmq:3.8-management-alpine"
+    environment: 
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=pass
     ports:
       - "4369:4369"
       - "5672:5672"
@@ -14,10 +17,10 @@ services:
   celery-flower:
     image: gregsi/latest-celery-flower-docker:latest
     environment:
-      - AMQP_USERNAME=user
-      - AMQP_PASSWORD=bitnami
-      - AMQP_ADMIN_USERNAME=user
-      - AMQP_ADMIN_PASSWORD=bitnami
+      - AMQP_USERNAME=admin
+      - AMQP_PASSWORD=pass
+      - AMQP_ADMIN_USERNAME=admin
+      - AMQP_ADMIN_PASSWORD=pass
       - AMQP_HOST=rabbitmq
       - AMQP_PORT=5672
       - AMQP_ADMIN_HOST=rabbitmq
