@@ -12,4 +12,6 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 COPY . /usr/src/app
 
+COPY .env.production /usr/src/app/.env
+
 EXPOSE 8000

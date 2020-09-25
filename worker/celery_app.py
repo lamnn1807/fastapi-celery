@@ -1,22 +1,15 @@
 import os
-
+from dotenv import load_dotenv, find_dotenv
 from celery import Celery
 
+load_dotenv(find_dotenv())
+
 celery_app = None
-
-if not bool(os.getenv('DOCKER')): # if running example without docker
-    celery_app = Celery(
-        "worker",
-        backend="rpc://",
-        broker="amqp://admin:pass@localhost:5672//"
-    )
-else: # running example with docker
-    celery_app = Celery(
-        "worker",
-        backend="rpc://",
-        broker="amqp://admin:pass@rabbitmq:5672//"
-    )
-
+celery_app = Celery(
+    "worker", 
+    broker=os.getenv("CELERY_BROKER"),
+    backend=os.getenv("CELERY_BACKEND"),
+)
 celery_app.conf.task_routes = {
     "worker.celery_worker.test_celery": "test-queue"}
 
